@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+    <title>PITM</title>
+</head>
+<body>
+<div class="container-fluid">
+    <h1>Parent in the Middle</h1>
+
+    <p>Control your child usage of the internet. Update the configuration below.</p>
+
+    <p>Make sure that the mitmproxy tool is running.</p>
+
+    <div class="row">
+
+        <form method="POST" action="/start">
+            <button type="submit" id="mitm_start" class="btn btn-secondary" style="margin:10px">
+                Start PITM
+            </button>
+        </form>
+        <br>
+        <form method="POST" action="/stop">
+            <button type="submit" id="mitm_stop" class="btn btn-secondary" style="margin:10px">
+                Stop PITM
+            </button>
+        </form>
+
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <form method="POST" action="/submit">
+                {{ form.csrf_token }}
+                <div class="form-group">
+                    <label for="bannedWords">{{form.bannedWords.label}}</label>
+                    {{ form.bannedWords(class_="form-control") }}
+                    <small id="bannedWordsHelp" class="form-text text-muted">
+                        The below entered words will be added to the filter list
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label for="whiteList">{{form.whiteList.label}}</label>
+                    {{ form.whiteList(class_="form-control") }}
+                    <small id="whiteListHelp" class="form-text text-muted">
+                        Only the above URLs will be allowed in the current session.
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label for="blackList">{{form.blackList.label}}</label>
+                    {{ form.blackList(class_="form-control") }}
+                    <small id="blackListHelp" class="form-text text-muted">
+                        The above URLs will be blocked in the current session.
+                    </small>
+                </div>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+        </div>
+        <div class="col">
+            <p>Session Info:</p>
+
+            <p>Time elapsed since start of session:
+                <span>
+                    <label id="minutes">00</label>
+                    :
+                    <label id="seconds">00</label>
+                </span>
+            </p>
+
+            <div>
+                <p>Websites visited So far in this session:</p>
+                {% for ip, sites in websites_visited.items() %}
+                <h4>{{ ip }}</h4>
+                <ul>
+                    {% for site in sites %}
+                    <li>{{ site }}</li>
+                    {% endfor %}
+                </ul>
+                {% endfor %}
+            </div>
+            <a href="/visualize">Visualization</a>
+        </div>
+    </div>
+</div>
+
+
+<script rel="text/javascript" src="{{ url_for('static', filename='timer.js') }}"></script>
+</body>
+</html>
